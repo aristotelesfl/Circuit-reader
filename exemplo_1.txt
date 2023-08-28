@@ -1,0 +1,8 @@
+C1 = {
+    entradas: ["A", "B", "C"],
+    saidas: ["Y"],
+    gates: ["g1", "g2", "g3"],
+    "g1": [nand, y1, A, B],
+    "g2": [ not, y2,  C],
+    "g3": [and, Y, B, y1, y2],
+    }
