@@ -52,10 +52,10 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
         for j in content:
             if i == j:
                 if j == 'and':
-                    circuit["gates"][i] = content[content.index(j):content.index(j)+3]
+                    circuit["gates"][i] = content[content.index(j)+1:content.index(j)+3]
                     break
                 else:
-                    circuit["gates"][i] = content[content.index(j):content.index(j)+4]
+                    circuit["gates"][i] = content[content.index(j)+1:content.index(j)+4]
                     break
 
 krl = fragment_strText(readLocal_file())
