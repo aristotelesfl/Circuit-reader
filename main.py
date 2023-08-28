@@ -1,11 +1,20 @@
 from tkinter import filedialog
 
-portas = ["and", "nand", "not", "and"]
+all_gates = ["and", "nand","xand", "not", "or", "nor", "xor"]
+
 circuit = {
         "entradas": {},
         "gates": {}
     }
 
+def list_gates(content: list, all_gates: list)->list:
+    content = content[content.index('gates'):]
+    gates = []
+    for i in content:
+        if i in all_gates:
+            gates = content[1:content.index(i)-1]
+            break
+    return gates
 #Lê o arquivo .txt e o retorna em formato de string única
 def readLocal_file()->str:
     directory = filedialog.askopenfilename()
@@ -36,19 +45,23 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
     
     for i in content[index_output+1:index_gate]:
         circuit["saidas"] = i.upper()
-    content = content[index_gate+1:]
     
-    for i in content:
-        content = content[content.index(i):]
-        if i not in portas:
-            for j in range(len(content)-1):
-                if content[j] in portas:
-                    if content[j] == 'not':
-                        circuit["gates"][i] = content[j:j+3]
-                        break
-                    else: 
-                        circuit["gates"][i] = content[j:j+4]
-                        break
+    gates = list_gates(content, all_gates)
+    content = content[index_gate+len(gates):]
+    for i in gates:
+        for j in content:
+            if i == j:
+                if j == 'and':
+                    circuit["gates"][i] = content[content.index(j):content.index(j)+3]
+                    break
+                else:
+                    circuit["gates"][i] = content[content.index(j):content.index(j)+4]
+                    break
+
+
+
+
+        
         
 
 krl = fragment_strText(readLocal_file())
