@@ -58,12 +58,6 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
                     circuit["gates"][i] = content[content.index(j):content.index(j)+4]
                     break
 
-
-
-
-        
-        
-
 krl = fragment_strText(readLocal_file())
 sliceContent_toDict(krl, circuit)
 
