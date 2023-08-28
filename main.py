@@ -1,6 +1,6 @@
 from tkinter import filedialog
-import re
 
+portas = ["and", "nand", "not", "and"]
 circuit = {
         "entradas": {},
         "gates": {}
@@ -12,12 +12,12 @@ def readLocal_file()->str:
     with open(directory, "r", encoding="utf8") as file:
         strText = file.read()
         strText = strText.replace('\n', ' ')
-        return strText
+        return strText.lower()
     
 #Recebe a string com o texto e retorna substrings em uma lista
 def fragment_strText(strText: str)->str:
-    strText = strText.translate({ord(i): None for i in ':,={}[]()""'})
-    content = re.split("[ ]", strText)
+    strText = strText.translate({ord(i): ' ' for i in ':,={}[]()""'})
+    content = strText.split(' ')
     while '' in content:
         content.remove('')
     return content
@@ -32,28 +32,24 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
             cin = int(input(f"Digite um nivel lógico 0 ou 1 para a entrada {i}: "))
             if cin == 0 or cin == 1:
                 break
-        circuit["entradas"][i] = cin
+        circuit["entradas"][i.upper()] = cin
     
     for i in content[index_output+1:index_gate]:
-        circuit["saidas"] = i
+        circuit["saidas"] = i.upper()
     content = content[index_gate+1:]
+    
     for i in content:
         content = content[content.index(i):]
-        for j in range(len(content)-1):
-            if content[j] == i:
-                if content[j+1] == 'not':
-                    circuit["gates"][i] = content[j+1:j+4]
-                    break
-                else: 
-                    circuit["gates"][i] = content[j+1:j+5]
-                    break
-
-                
-
-
-    
+        if i not in portas:
+            for j in range(len(content)-1):
+                if content[j] in portas:
+                    if content[j] == 'not':
+                        circuit["gates"][i] = content[j:j+3]
+                        break
+                    else: 
+                        circuit["gates"][i] = content[j:j+4]
+                        break
         
-    
 
 krl = fragment_strText(readLocal_file())
 sliceContent_toDict(krl, circuit)
