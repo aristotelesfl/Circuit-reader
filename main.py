@@ -2,7 +2,7 @@
 all_gates = ["AND", "NAND", "NOT", "OR", "NOR", "XOR", "XNOR"]
 output_file = "Tabela.txt"
 circuit = {
-        "entradas": {},
+        "entradas": [],
         "gates": {}
     }
 
@@ -78,11 +78,7 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
     index_output = content.index('SAIDAS')
     index_gate = content.index('GATES')
     for i in content[index_input+1:index_output]:
-        while True:
-            cin = int(input(f"Digite um nivel lógico 0 ou 1 para a entrada {i}: "))
-            if cin == 0 or cin == 1:
-                break
-        circuit["entradas"][i] = cin
+        circuit["entradas"].append(i)
     
     for i in content[index_output+1:index_gate]:
         circuit["saidas"] = i
@@ -93,3 +89,12 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
 
 def create_table(circuit: dict)->list:
     pass
+
+
+
+
+
+krl = fragment_strText(readLocal_file())
+sliceContent_toDict(krl, circuit)
+
+print(circuit)
