@@ -1,48 +1,48 @@
-from tkinter import filedialog
 
-all_gates = ["AND", "NAND","XAND", "NOT", "OR", "NOR", "XOR"]
-
+all_gates = ["AND", "NAND", "NOT", "OR", "NOR", "XOR", "XNOR"]
+output_file = "Tabela.txt"
 circuit = {
         "entradas": {},
         "gates": {}
     }
 
-def gate_not(a: bool)->bool:
-    if a == True:
-        return False
-    else:
-        return True
+def logical(gate: str, a:bool, b:bool)->bool:
+    if gate == "AND":
+        if a == True and b == True:
+            return True
+        else:
+            return False
+    elif gate == "OR":
+        if a == False and b == False:
+            return False
+        else:
+            return True
+    elif gate == "XOR":
+        if ((a and gate_not(b)) or (gate_not(a) and b)) == True:
+            return True
+        else:
+            return False
 
-def gate_and(a:bool, b:bool)->bool:
-    if a == True and b == True:
-        return True
-    else:
-        return False
-
-def gate_or(a:bool, b:bool)->bool:
-    if a == False and b == False:
-        return False
-    else:
-        return True
-
-def gate_xor(a: bool, b: bool)->bool:
-    if (gate_and(a,gate_not(b)) or gate_and(gate_not(a), b)) == True:
-        return True
-    else:
-        return False
+def gate_not(gate, a: bool)->bool:
+    if gate == "AND":
+        if a == True:
+            return False
+        else:
+            return True
     
-def slice_list_by_indices(input_list, indices):
+#Fatia uma parte da lista separando-a a partir dos gates    
+def sliceContent_byGates(content: list, gates: list)->None:
     current_key = None
     current_sublist = []
 
-    for item in input_list:
-        if item in indices:
+    for i in content:
+        if i in gates:
             if current_key is not None:
                 circuit["gates"][current_key] = current_sublist
                 current_sublist = []
-            current_key = item
+            current_key = i
         else:
-            current_sublist.append(item)
+            current_sublist.append(i)
 
     if current_key is not None:
         circuit["gates"][current_key] = current_sublist
@@ -56,17 +56,17 @@ def list_gates(content: list, all_gates: list)->list:
             gates = content[1:content.index(i)-1]
             break
     return gates
+
 #Lê o arquivo .txt e o retorna em formato de string única
 def readLocal_file()->str:
-    directory = filedialog.askopenfilename()
-    with open(directory, "r", encoding="utf8") as file:
+    with open("exemplo_1.txt", "r", encoding="utf8") as file:
         strText = file.read()
         strText = strText.replace('\n', ' ')
         return strText.upper()
     
 #Recebe a string com o texto e retorna substrings em uma lista
 def fragment_strText(strText: str)->str:
-    strText = strText.translate({ord(i): ' ' for i in ':,={}[]()""'})
+    strText = strText.translate({ord(i): ' ' for i in ':,={}[]()""“”'})
     content = strText.split(' ')
     while '' in content:
         content.remove('')
@@ -89,12 +89,7 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
     
     gates = list_gates(content, all_gates)
     content = content[index_gate+len(gates):]
-    slice_list_by_indices (content, gates)
+    sliceContent_byGates (content, gates)
 
-
-
-
-krl = fragment_strText(readLocal_file())
-sliceContent_toDict(krl, circuit)
-
-print(circuit)
+def create_table(circuit: dict)->list:
+    pass
