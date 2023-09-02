@@ -5,37 +5,43 @@ circuit = {
         "entradas": [],
         "gates": {}
     }
+ 
+def inputs(n: int)->list:
+    all_inputs = []
+    for i in range(2**n):
+        binario = list(bin(i)[2:].zfill(n))
+        all_inputs.append([int(bit) for bit in binario])
+    return all_inputs
 
 def logical(gate: str, a:bool, b:bool)->bool:
     if gate == "AND":
-        if a == True and b == True:
-            return True
-        else:
-            return False
+        return a and b
     elif gate == "OR":
-        if a == False and b == False:
-            return False
-        else:
-            return True
+        return a or b
     elif gate == "XOR":
-        if ((a and gate_not(b)) or (gate_not(a) and b)) == True:
-            return True
-        else:
-            return False
+        return a ^ b
 
 def gate_not(gate, a: bool)->bool:
-    if gate == "AND":
-        if a == True:
-            return False
-        else:
-            return True
-    
+    if gate == "NOT":
+        return not(a)
+
+#Encontra os gates e separa numa sublista
+def list_gates(content: list, all_gates: list)->list:
+    content = content[content.index('GATES'):]
+    gates = []
+    for i in content:
+        if i in all_gates:
+            gates = content[1:content.index(i)-1]
+            break
+    gates.sort()
+    return gates
+
 #Fatia uma parte da lista separando-a a partir dos gates    
 def sliceContent_byGates(content: list, gates: list)->None:
     current_key = None
     current_sublist = []
 
-    for i in content:
+    for i in content: 
         if i in gates:
             if current_key is not None:
                 circuit["gates"][current_key] = current_sublist
@@ -47,15 +53,7 @@ def sliceContent_byGates(content: list, gates: list)->None:
     if current_key is not None:
         circuit["gates"][current_key] = current_sublist
 
-#Encontra os gates e separa numa sublista
-def list_gates(content: list, all_gates: list)->list:
-    content = content[content.index('GATES'):]
-    gates = []
-    for i in content:
-        if i in all_gates:
-            gates = content[1:content.index(i)-1]
-            break
-    return gates
+#---------------------------------------------------------------
 
 #Lê o arquivo .txt e o retorna em formato de string única
 def readLocal_file()->str:
@@ -90,11 +88,8 @@ def sliceContent_toDict(content: str, circuit: dict)->None:
 def create_table(circuit: dict)->list:
     pass
 
+string = fragment_strText(readLocal_file())
 
+sliceContent_toDict(string, circuit)
 
-
-
-krl = fragment_strText(readLocal_file())
-sliceContent_toDict(krl, circuit)
-
-print(circuit)
+print (circuit)
